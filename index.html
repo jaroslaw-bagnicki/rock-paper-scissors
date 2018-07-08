@@ -11,8 +11,37 @@
   <title>The Game: Rock-paper-scrissors</title>
 </head>
 <body>
-  <div class="container">
-      <h1>Hello Gamer!</h1>
+  <div class="game-area">
+    <div class="game-interface-wrapper u-center">
+        <h4>What is Your next move?</h4>
+        <div class="game-buttons">
+          <div class="game-button">
+            <a href="#!">
+              Rock
+            </a>
+          </div>
+          <div class="game-button">
+            <a href="#!">
+              Paper
+            </a>
+          </div>
+          <div class="game-button">
+            <a href="#!">
+              Scrissors
+            </a>
+          </div>
+        </div>
+        <h5>Your last choices: ---</h5>
+        <h4>Actual score:</h4>
+        <h1 class="game-score"> - : -</h1>
+    </div> <!-- Game-main end -->
+
+      <div class="gamelog-wrapper">
+        <h5 class="gamelog-board-title">Log board:</h5>
+        <div id="gamelog-board">
+        </div>     
+      </div> <!-- Log-board end -->
+    </div> <!-- Game-area end -->
   </div>
 </body>
 </html>

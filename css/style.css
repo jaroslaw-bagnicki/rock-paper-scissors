@@ -1,0 +1,55 @@
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+.u-center {
+  text-align: center;
+}
+
+.game-area {
+  height: 100vh;
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 5rem 0;
+  display: flex;
+}
+
+.game-interface-wrapper,
+.gamelog-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  padding: 0 1rem;
+}
+
+.game-interface-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.game-button {
+  display: inline-block;
+  height: 10rem;
+  width: 10rem;
+  margin-bottom: 2rem;
+  background-color: lightgoldenrodyellow;
+}
+
+.game-button a {
+  color: grey;
+  text-decoration: none;
+  line-height: 10rem;
+}
+
+.game-button a:hover {
+  color: black;
+}
+
+#gamelog-board {
+  flex-grow: 1;
+  background-color: hsl(0, 0%, 88%);
+  padding: 0 .5rem;
+  overflow: auto;
+}
