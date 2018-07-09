@@ -59,7 +59,7 @@ const game = (function () {
     addLogMessage('Game started.');
   };
 
-  // PUBLIC playerMove method
+  // PUBLIC nextRound method
   function nextRound () {
     let roundResultMap = {
       '0': 'Draw.',
