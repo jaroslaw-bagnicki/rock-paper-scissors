@@ -2,6 +2,7 @@
 
 const game = (function () {
   let gameScore = {};
+  let winningScore = 3;
 
   const gameChoiceMap = {
     1: 'rock',
@@ -51,7 +52,7 @@ const game = (function () {
     if (roundResult === -1) gameScore.computer++;
     updateUIGameScore();
   }
-  
+
   // PUBLIC newGame method
   function newGame () {
     gameScore.player = gameScore.computer = 0;
@@ -59,6 +60,12 @@ const game = (function () {
     addLogMessage('Game started.');
   };
 
+  // PRIV endGame method
+  function endGame() {
+    if (gameScore.player === winningScore) addLogMessage('Wonderful! You WIN the game!!!'); 
+    if (gameScore.computer === winningScore) addLogMessage('Badly! You LOSE the game!!!'); 
+  }
+  
   // PUBLIC nextRound method
   function nextRound () {
     let roundResultMap = {
@@ -70,7 +77,8 @@ const game = (function () {
     let computerChoice = computerMove();
     let roundResult = checkRoundResult(playerChoice,computerChoice);
     updateScore(roundResult);
-    addLogMessage(`${UIicons[gameChoiceMap[playerChoice]]} vs ${UIicons[gameChoiceMap[computerChoice]]}. ${roundResultMap[roundResult]}`);
+    addLogMessage(`${UIicons[gameChoiceMap[playerChoice]]} vs ${UIicons[gameChoiceMap[computerChoice]]}. ${roundResultMap[roundResult]}`)
+    if (gameScore.player === winningScore || gameScore.computer === winningScore) endGame();
   };
   
   return {
