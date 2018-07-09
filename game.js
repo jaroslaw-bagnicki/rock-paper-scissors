@@ -55,6 +55,11 @@ const game = (function () {
 
   // PUBLIC newGame method
   function newGame () {
+    UIGameBtns.forEach(btn => {
+      btn.addEventListener('click', game.nextRound);
+      btn.classList.add('active')
+    });
+
     gameScore.player = gameScore.computer = 0;
     updateUIGameScore();
     addLogMessage('Game started.');
@@ -64,6 +69,10 @@ const game = (function () {
   function endGame() {
     if (gameScore.player === winningScore) addLogMessage('Wonderful! You WIN the game!!!'); 
     if (gameScore.computer === winningScore) addLogMessage('Badly! You LOSE the game!!!'); 
+    UIGameBtns.forEach(btn => {
+      btn.removeEventListener('click', game.nextRound);
+      btn.classList.remove('active');
+    });
   }
   
   // PUBLIC nextRound method
@@ -80,7 +89,7 @@ const game = (function () {
     addLogMessage(`${UIicons[gameChoiceMap[playerChoice]]} vs ${UIicons[gameChoiceMap[computerChoice]]}. ${roundResultMap[roundResult]}`)
     if (gameScore.player === winningScore || gameScore.computer === winningScore) endGame();
   };
-  
+
   return {
     newGame,
     nextRound
@@ -97,8 +106,6 @@ const UIBtnsIdMap = {
   'game-btn-paper': 2,
   'game-btn-scissors': 3
 }
-
-UIGameBtns.forEach(btn => btn.addEventListener('click', game.nextRound));
 
 game.newGame();
 
