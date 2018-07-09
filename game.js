@@ -46,7 +46,7 @@ const game = (function () {
   };
 
   // PUBLIC playerMove method
-  function playerMove () {
+  function nextRound () {
     let playerChoice = UIBtnsIdMap[this.id];
     let computerChoice = computerMove();
     addLogMessage(`${UIicons[gameChoiceMap[playerChoice]]} vs ${UIicons[gameChoiceMap[computerChoice]]}. ${checkRoundResult(playerChoice,computerChoice)}`)
@@ -54,7 +54,7 @@ const game = (function () {
   
   return {
     newGame,
-    playerMove
+    nextRound
   }
 })()
 
@@ -75,7 +75,7 @@ const UIBtnsIdMap = {
   'game-btn-scissors': 3
 }
 
-UIGameBtns.forEach(btn => btn.addEventListener('click', game.playerMove));
+UIGameBtns.forEach(btn => btn.addEventListener('click', game.nextRound));
 
 game.newGame();
 
