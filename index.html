@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/skeleton.css">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
   <link rel="icon" type="image/png" href="images/favicon.png">
   <title>The Game: Rock-paper-scrissors</title>
 </head>
@@ -14,33 +15,30 @@
   <div class="game-area">
     <div class="game-interface-wrapper u-center">
         <h4>What is Your next move?</h4>
-        <div class="game-buttons">
-          <div class="game-button">
-            <a href="#!">
-              Rock
+        <div class="game-btns">
+          <div id="game-btn-rock" class="game-btn">
+            <a href="#!" class="fa fa-hand-rock">
             </a>
           </div>
-          <div class="game-button">
-            <a href="#!">
-              Paper
+          <div id="game-btn-paper" class="game-btn">
+            <a href="#!" class="fa fa-hand-paper">
             </a>
           </div>
-          <div class="game-button">
-            <a href="#!">
-              Scrissors
-            </a>
+          <div id="game-btn-scissors" class="game-btn">
+            <a href="#!" class="fa fa-hand-scissors">
+              </a>
           </div>
         </div>
         <h5>Your last choices: ---</h5>
         <h4>Actual score:</h4>
         <h1 class="game-score"> - : -</h1>
-    </div> <!-- Game-main end -->
+    </div> <!-- game-interface-wrapper end -->
 
       <div class="gamelog-wrapper">
         <h5 class="gamelog-board-title">Log board:</h5>
         <div id="gamelog-board">
         </div>     
-      </div> <!-- Log-board end -->
+      </div> <!-- gamelog-wrapper end -->
     </div> <!-- Game-area end -->
   </div>
 </body>
