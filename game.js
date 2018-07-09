@@ -28,15 +28,15 @@ const game = (function () {
   // PRIV checkRoundResult method
   function checkRoundResult(playerMv, computerMv) {
     if (playerMv === computerMv) 
-      return 'Draw.';
+      return 0;
     if ((playerMv === 1 && computerMv === 2) || 
         (playerMv === 2 && computerMv === 3) || 
         (playerMv === 3 && computerMv === 1))
-      return 'You lose round :(';
+      return -1;
     if ((playerMv === 1 && computerMv === 3) || 
         (playerMv === 2 && computerMv === 1) || 
         (playerMv === 3 && computerMv === 2))
-      return 'You win round :)';
+      return 1;
   }
   
   // PUBLIC newGame method
@@ -50,7 +50,12 @@ const game = (function () {
   function nextRound () {
     let playerChoice = UIBtnsIdMap[this.id];
     let computerChoice = computerMove();
-    addLogMessage(`${UIicons[gameChoiceMap[playerChoice]]} vs ${UIicons[gameChoiceMap[computerChoice]]}. ${checkRoundResult(playerChoice,computerChoice)}`)
+    let roundResultMap = {
+      '0': 'Draw.',
+      '-1': 'You lose round :(',
+      '1': 'You win round :)'
+    };
+    addLogMessage(`${UIicons[gameChoiceMap[playerChoice]]} vs ${UIicons[gameChoiceMap[computerChoice]]}. ${roundResultMap[checkRoundResult(playerChoice,computerChoice)]}`)
   };
   
   return {
