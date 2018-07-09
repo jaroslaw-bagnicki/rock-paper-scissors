@@ -3,6 +3,12 @@
 const game = (function () {
   let gameScore = {};
 
+  const gameChoiceMap = {
+    1: 'rock',
+    2: 'paper',
+    3: 'scissors'
+  }
+
   // PRIV scoreRefresh method 
   function scoreRefresh () {
     UIGameScore.innerHTML = `${gameScore.player} : ${gameScore.computer}`
@@ -12,7 +18,12 @@ const game = (function () {
   function addLogMessage (message) {
     UIGameLog.insertAdjacentHTML('afterbegin',`[${new Date().toLocaleTimeString()}] ${message} <br>`);
     scoreRefresh();
-  }
+  };
+
+  // PRIV 
+  function computerMove () {
+    return Math.ceil((Math.random() * 3));
+  };
   
   // PUBLIC newGame method
   function newGame () {
@@ -23,7 +34,9 @@ const game = (function () {
 
   // PUBLIC playerMove method
   function playerMove () {
-    addLogMessage(this.id);
+    let playerChoice = UIBtnsIdMap[this.id];
+    let computerChoice = computerMove();
+    addLogMessage(`${UIicons[gameChoiceMap[playerChoice]]} vs ${UIicons[gameChoiceMap[computerChoice]]}.`)
   };
   
   return {
@@ -41,6 +54,12 @@ const UIicons = {
   rock: '<i class="fa fa-hand-rock"></i>',
   paper: '<i class="fa fa-hand-paper"></i>',
   scissors: '<i class="fa fa-hand-scissors"></i>'
+}
+
+const UIBtnsIdMap = {
+  'game-btn-rock': 1,
+  'game-btn-paper': 2,
+  'game-btn-scissors': 3
 }
 
 UIGameBtns.forEach(btn => btn.addEventListener('click', game.playerMove));
