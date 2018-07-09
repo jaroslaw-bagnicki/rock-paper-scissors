@@ -20,11 +20,12 @@ const game = (function () {
     scoreRefresh();
   };
 
-  // PRIV 
+  // PRIV computerMove method
   function computerMove () {
     return Math.ceil((Math.random() * 3));
   };
 
+  // PRIV checkRoundResult method
   function checkRoundResult(playerMv, computerMv) {
     if (playerMv === computerMv) 
       return 'Draw.';
