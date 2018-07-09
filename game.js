@@ -10,7 +10,7 @@ const game = (function () {
 
   // PRIV addLogMessage method 
   function addLogMessage (message) {
-    UIGameLog.insertAdjacentHTML('beforeend',`[${new Date().toLocaleTimeString()}] ${message}`);
+    UIGameLog.insertAdjacentHTML('afterbegin',`[${new Date().toLocaleTimeString()}] ${message} <br>`);
     scoreRefresh();
   }
   
@@ -23,7 +23,7 @@ const game = (function () {
 
   // PUBLIC playerMove method
   function playerMove () {
-    console.log(this.id);
+    addLogMessage(this.id);
   };
   
   return {
