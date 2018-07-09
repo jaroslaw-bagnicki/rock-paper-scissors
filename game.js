@@ -9,15 +9,21 @@ const game = (function () {
     3: 'scissors'
   }
 
+  const UIicons = {
+    rock: '<i class="fa fa-hand-rock"></i>',
+    paper: '<i class="fa fa-hand-paper"></i>',
+    scissors: '<i class="fa fa-hand-scissors"></i>'
+  }
+
   // PRIV scoreRefresh method 
-  function scoreRefresh () {
+  function updateUIGameScore () {
     UIGameScore.innerHTML = `${gameScore.player} : ${gameScore.computer}`
   };
 
   // PRIV addLogMessage method 
   function addLogMessage (message) {
     UIGameLog.insertAdjacentHTML('afterbegin',`[${new Date().toLocaleTimeString()}] ${message} <br>`);
-    scoreRefresh();
+    updateUIGameScore();
   };
 
   // PRIV computerMove method
@@ -38,24 +44,33 @@ const game = (function () {
         (playerMv === 3 && computerMv === 2))
       return 1;
   }
+
+  // PRIV updateScore method
+  function updateScore(roundResult) {
+    if (roundResult === 1) gameScore.player++;
+    if (roundResult === -1) gameScore.computer++;
+    updateUIGameScore();
+  }
   
   // PUBLIC newGame method
   function newGame () {
     gameScore.player = gameScore.computer = 0;
-    scoreRefresh();
+    updateUIGameScore();
     addLogMessage('Game started.');
   };
 
   // PUBLIC playerMove method
   function nextRound () {
-    let playerChoice = UIBtnsIdMap[this.id];
-    let computerChoice = computerMove();
     let roundResultMap = {
       '0': 'Draw.',
       '-1': 'You lose round :(',
       '1': 'You win round :)'
     };
-    addLogMessage(`${UIicons[gameChoiceMap[playerChoice]]} vs ${UIicons[gameChoiceMap[computerChoice]]}. ${roundResultMap[checkRoundResult(playerChoice,computerChoice)]}`)
+    let playerChoice = UIBtnsIdMap[this.id];
+    let computerChoice = computerMove();
+    let roundResult = checkRoundResult(playerChoice,computerChoice);
+    updateScore(roundResult);
+    addLogMessage(`${UIicons[gameChoiceMap[playerChoice]]} vs ${UIicons[gameChoiceMap[computerChoice]]}. ${roundResultMap[roundResult]}`);
   };
   
   return {
@@ -68,12 +83,6 @@ const game = (function () {
 const UIGameBtns = document.querySelectorAll('.game-btn');
 const UIGameScore = document.querySelector('#game-score');
 const UIGameLog = document.querySelector('#gamelog-board');
-
-const UIicons = {
-  rock: '<i class="fa fa-hand-rock"></i>',
-  paper: '<i class="fa fa-hand-paper"></i>',
-  scissors: '<i class="fa fa-hand-scissors"></i>'
-}
 
 const UIBtnsIdMap = {
   'game-btn-rock': 1,
