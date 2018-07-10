@@ -6,6 +6,7 @@
   --red: #c0392b;
   --green: #009432;
   --blue: #2980b9;
+  --lightgrey: #e0e0e0;
 }
 
 .u-center {
@@ -88,7 +89,40 @@
 
 #gamelog-board {
   flex-grow: 1;
-  background-color: hsl(0, 0%, 88%);
+  background-color: var(--lightgrey);
   padding: 0 .5rem;
   overflow: auto;
+}
+
+.modal {
+  position: fixed;
+  z-index: 1;
+  top:0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  background-color: rgba(0, 0, 0, .3);
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  width: 90%;
+  max-width: 60rem;
+}
+.modal-body {
+  padding: 2rem;
+  background-color: white;
+}
+
+.modal-footer {
+  background-color: var(--lightgrey);
+  text-align: right;
+  padding: 1rem 2rem;
+}
+
+.modal-footer .button {
+  margin-bottom: 0;
 }
