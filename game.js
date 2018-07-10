@@ -3,6 +3,7 @@
 const game = (function () {
   let gameScore = {};
   let winningScore = 3;
+  let gameRunning = false;
 
   const gameChoiceMap = {
     1: 'rock',
@@ -14,6 +15,11 @@ const game = (function () {
     rock: '<i class="fa fa-hand-rock"></i>',
     paper: '<i class="fa fa-hand-paper"></i>',
     scissors: '<i class="fa fa-hand-scissors"></i>'
+  }
+
+  // PUBLIC check is game currently running
+  function isGameRunning () {
+    return gameRunning;
   }
 
   // PRIV scoreRefresh method 
@@ -55,6 +61,7 @@ const game = (function () {
 
   // PUBLIC newGame method
   function newGame () {
+    gameRunning = true;
     UIGameBtns.forEach(btn => {
       btn.addEventListener('click', game.nextRound);
       btn.classList.add('active')
@@ -66,7 +73,8 @@ const game = (function () {
   };
 
   // PRIV endGame method
-  function endGame() {
+  function endGame () {
+    gameRunning = false;
     if (gameScore.player === winningScore) addLogMessage('Wonderful! You WIN the game!!!'); 
     if (gameScore.computer === winningScore) addLogMessage('Badly! You LOSE the game!!!'); 
     UIGameBtns.forEach(btn => {
@@ -92,7 +100,8 @@ const game = (function () {
 
   return {
     newGame,
-    nextRound
+    nextRound,
+    isGameRunning
   }
 })()
 
@@ -107,31 +116,29 @@ const UIBtnsIdMap = {
   'game-btn-scissors': 3
 }
 
-// game.newGame();
-
- function modal (message, actionFn, actionName) {
-  let modalBody = `
-    <div id="modal" class="modal">
-      <div class="modal-content">
-        <div class="modal-body">
-          <h5 class="modal-message">${message}</h5>
-        </div>
-        <div class="modal-footer">
-        <a id="modal-btn-close" href="#!" class="button">Close</a>
-          <a id="modal-btn-action" href="#!" class="button">${actionName}</a>
-        </div>
+function modal (message, actionFn, actionName) {
+let modalBody = `
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h5 class="modal-message">${message}</h5>
+      </div>
+      <div class="modal-footer">
+      <a id="modal-btn-close" href="#!" class="button">Close</a>
+        <a id="modal-btn-action" href="#!" class="button">${actionName}</a>
       </div>
     </div>
-  `;
-   document.body.insertAdjacentHTML('beforeend', modalBody);
-   let UImodal = document.querySelector('#modal');
-   let UImodalBtnClose = document.querySelector('#modal-btn-close');
-   let UImodalBtnAction = document.querySelector('#modal-btn-action');
-   UImodalBtnClose.addEventListener('click', function() {UImodal.remove()});
-   UImodalBtnAction.addEventListener('click', function() {
-     UImodal.remove();
-     actionFn();
-   });
- }
+  </div>
+`;
+  document.body.insertAdjacentHTML('beforeend', modalBody);
+  let UImodal = document.querySelector('#modal');
+  let UImodalBtnClose = document.querySelector('#modal-btn-close');
+  let UImodalBtnAction = document.querySelector('#modal-btn-action');
+  UImodalBtnClose.addEventListener('click', function() {UImodal.remove()});
+  UImodalBtnAction.addEventListener('click', function() {
+    UImodal.remove();
+    actionFn();
+  });
+}
 
 //  modal('Hello Gamer. Do You want play a game?', game.newGame ,"Play");
