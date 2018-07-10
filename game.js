@@ -2,7 +2,7 @@
 
 const game = (function () {
   let gameScore = {};
-  let winningScore = 3;
+  let winningScore = 5;
   let gameRunning = false;
 
   const gameChoiceMap = {
@@ -107,6 +107,7 @@ const game = (function () {
 
 // UI Vars
 const UIGameBtns = document.querySelectorAll('.game-btn');
+const UINewGameBtn = document.querySelector('#new-game-btn');
 const UIGameScore = document.querySelector('#game-score');
 const UIGameLog = document.querySelector('#gamelog-board');
 
@@ -116,6 +117,17 @@ const UIBtnsIdMap = {
   'game-btn-scissors': 3
 }
 
+UINewGameBtn.addEventListener('click', newGameClick);
+
+// Function handling 'New Game' button
+function newGameClick () {
+  if (!game.isGameRunning()) 
+    modal('Hello Gamer. Do You want play a game?', game.newGame ,"Play");
+  if (game.isGameRunning()) 
+    modal('You play now. Are you sure you want to start a new one?', game.newGame ,"Restart");
+}
+
+// Modal function
 function modal (message, actionFn, actionName) {
 let modalBody = `
   <div id="modal" class="modal">
@@ -141,4 +153,4 @@ let modalBody = `
   });
 }
 
-//  modal('Hello Gamer. Do You want play a game?', game.newGame ,"Play");
+
