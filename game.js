@@ -134,4 +134,4 @@ const UIBtnsIdMap = {
    });
  }
 
- modal('Hello Gamer. Do You want play a game?', game.newGame ,"Play");
+//  modal('Hello Gamer. Do You want play a game?', game.newGame ,"Play");
