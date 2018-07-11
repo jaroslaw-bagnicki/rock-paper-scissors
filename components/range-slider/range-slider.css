@@ -13,7 +13,7 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
-  height: rem;
+  height: 1.2rem;
 }
 
 .range-slider {
