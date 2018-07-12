@@ -22,6 +22,17 @@ const game = (function () {
     return gameRunning;
   }
 
+  // PUBLIC get & set method for winningScore properties
+  function getWinningScore () {
+    return winningScore;
+  }
+
+  function setWinningScore (value) {
+    if (arguments.length === 0) throw 'No passed parameter.';
+    if (!Number.isInteger(value)) throw 'Parameter must be integer.';
+    winningScore = value;
+  }
+
   // PRIV scoreRefresh method 
   function updateUIGameScore () {
     UIGameScore.innerHTML = `${gameScore.player} : ${gameScore.computer}`
@@ -101,7 +112,9 @@ const game = (function () {
   return {
     newGame,
     nextRound,
-    isGameRunning
+    isGameRunning,
+    getWinningScore, 
+    setWinningScore 
   }
 })()
 
