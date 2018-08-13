@@ -1,0 +1,33 @@
+{
+  "name": "game_rock-paper-scissors",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "init-project": "npm run init:git && npm run init:gitignore && npm install && npm run init:dirs && npm run init:files",
+    "init:git": "git init",
+    "init:gitignore": "curl https://raw.githubusercontent.com/github/gitignore/master/Node.gitignore -o .gitignore",
+    "init:dirs": "mkdirp scss css",
+    "init:files": "touch README.md index.html scss/main.scss",
+    "test": "npm run test:html",
+    "test:html": "globstar -- nu-html-checker *.html",
+    "prefix-css": "autoprefixer-cli -o css/css.prefixed.css css/style.css",
+    "postcss-prefix": "postcss css/style.css -u autoprefixer -o css/css.prefixed.css",
+    "watch:browsersync": "browser-sync start --server --files css/*.css index.html",
+    "build:clean": "rimraf css/*.css",
+    "build:sass": "node-sass scss/main.scss css/style.css"
+  },
+  "repository": "git@github.com:jaroslaw-bagnicki/rock-paper-scissors.git",
+  "author": "Jarosław Bagnicki <jarek@bagnicki.net>",
+  "license": "mit",
+  "private": true,
+  "devDependencies": {
+    "autoprefixer-cli": "^1.0.0",
+    "browser-sync": "^2.24.5",
+    "globstar": "^1.0.0",
+    "mkdirp": "^0.5.1",
+    "node-sass": "^4.9.0",
+    "nu-html-checker": "^0.1.0",
+    "postcss-cli": "^5.0.1",
+    "rimraf": "^2.6.2"
+  }
+}
