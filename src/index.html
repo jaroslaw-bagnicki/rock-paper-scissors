@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <title>The Game: Rock-paper-scrissors</title>
+</head>
+<body>
+  <div class="game-area">
+    <div class="game-interface-wrapper u-center">
+        <h4>What is Your next move?</h4>
+        <div class="game-btns">
+          <div id="game-btn-rock" class="game-btn">
+            <i class="fa fa-hand-rock">
+            </i>
+          </div>
+          <div id="game-btn-paper" class="game-btn">
+            <i class="fa fa-hand-paper">
+            </i>
+          </div>
+          <div id="game-btn-scissors" class="game-btn">
+            <i class="fa fa-hand-scissors">
+            </i>
+          </div>
+        </div>
+        <h4>Score:</h4>
+        <h1 id="game-score">- : -</h1>
+        <a id="new-game-btn" href="#!" class="button">New Game</a>
+    </div> <!-- game-interface-wrapper end -->
+
+      <div class="gamelog-wrapper">
+        <h5 class="gamelog-board-title">Log board:</h5>
+        <div id="gamelog-board">
+        </div>     
+      </div> <!-- gamelog-wrapper end -->
+    </div> <!-- Game-area end -->
+  </div>
+  <script type="text/javascript" src="game.js"></script>
+</body>
+</html>
