@@ -165,5 +165,3 @@ let modalBody = `
     actionFn();
   });
 }
-
-
