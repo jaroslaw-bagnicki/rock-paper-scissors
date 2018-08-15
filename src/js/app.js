@@ -4,6 +4,7 @@ const game = (function () {
   const gameState = {
     gameRunning: false,
     winningScore: 5,
+    roundsPlayed: 0,
     gameScore: {
       player: 0,
       computer: 0
@@ -110,7 +111,8 @@ const game = (function () {
     let computerMv = computerMove();
     let roundResult = checkRoundResult(playerMv,computerMv);
     updateScore(roundResult);
-    addLogMessage(`${UIicons[playerMv]} vs ${UIicons[computerMv]}. ${roundResultMap[roundResult]}`)
+    gameState.roundsPlayed++;
+    addLogMessage(`Round ${gameState.roundsPlayed}: ${UIicons[playerMv]} vs ${UIicons[computerMv]}. ${roundResultMap[roundResult]}`)
     if (gameState.gameScore.player === gameState.winningScore || gameState.gameScore.computer === gameState.winningScore) endGame();
   };
 
