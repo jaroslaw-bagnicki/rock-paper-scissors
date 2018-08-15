@@ -5,16 +5,16 @@ const game = (function () {
   let winningScore = 5;
   let gameRunning = false;
 
-  const gameChoiceMap = {
-    1: 'rock',
-    2: 'paper',
-    3: 'scissors'
+  const gameMvMap = {
+    'rock': 1,
+    'paper': 2,
+    'scissors': 3
   }
 
   const UIicons = {
-    rock: '<i class="fa fa-hand-rock"></i>',
-    paper: '<i class="fa fa-hand-paper"></i>',
-    scissors: '<i class="fa fa-hand-scissors"></i>'
+    1: '<i class="fa fa-hand-rock"></i>', // rock
+    2: '<i class="fa fa-hand-paper"></i>', // paper
+    3: '<i class="fa fa-hand-scissors"></i>' // scissors
   }
 
   // PUBLIC check is game currently running
@@ -95,17 +95,17 @@ const game = (function () {
   }
   
   // PUBLIC nextRound method
-  function nextRound () {
+  function nextRound (e) {
     let roundResultMap = {
       '0': 'Draw.',
       '-1': 'You lose round :(',
       '1': 'You win round :)'
     };
-    let playerChoice = UIBtnsIdMap[this.id];
-    let computerChoice = computerMove();
-    let roundResult = checkRoundResult(playerChoice,computerChoice);
+    let playerMv = gameMvMap[e.currentTarget.getAttribute('data-mv')];
+    let computerMv = computerMove();
+    let roundResult = checkRoundResult(playerMv,computerMv);
     updateScore(roundResult);
-    addLogMessage(`${UIicons[gameChoiceMap[playerChoice]]} vs ${UIicons[gameChoiceMap[computerChoice]]}. ${roundResultMap[roundResult]}`)
+    addLogMessage(`${UIicons[playerMv]} vs ${UIicons[computerMv]}. ${roundResultMap[roundResult]}`)
     if (gameScore.player === winningScore || gameScore.computer === winningScore) endGame();
   };
 
@@ -123,12 +123,6 @@ const UIGameBtns = document.querySelectorAll('.game-btn');
 const UINewGameBtn = document.querySelector('#new-game-btn');
 const UIGameScore = document.querySelector('#game-score');
 const UIGameLog = document.querySelector('#gamelog-board');
-
-const UIBtnsIdMap = {
-  'game-btn--rock': 1,
-  'game-btn--paper': 2,
-  'game-btn--scissors': 3
-}
 
 UINewGameBtn.addEventListener('click', newGameClick);
 
