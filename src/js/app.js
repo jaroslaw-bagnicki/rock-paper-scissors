@@ -1,9 +1,14 @@
 'use strict'
 
 const game = (function () {
-  let gameScore = {};
-  let winningScore = 5;
-  let gameRunning = false;
+  const gameState = {
+    gameRunning: false,
+    winningScore: 5,
+    gameScore: {
+      player: 0,
+      computer: 0
+    }
+  }
 
   const gameMvMap = {
     'rock': 1,
@@ -19,23 +24,23 @@ const game = (function () {
 
   // PUBLIC check is game currently running
   function isGameRunning () {
-    return gameRunning;
+    return gameState.gameRunning;
   }
 
   // PUBLIC get & set method for winningScore properties
   function getWinningScore () {
-    return winningScore;
+    return gameState.winningScore;
   }
 
   function setWinningScore (value) {
     if (arguments.length === 0) throw 'No passed parameter.';
     if (!Number.isInteger(value)) throw 'Parameter must be integer.';
-    winningScore = value;
+    gameState.winningScore = value;
   }
 
   // PRIV scoreRefresh method 
   function updateUIGameScore () {
-    UIGameScore.innerHTML = `${gameScore.player} : ${gameScore.computer}`
+    UIGameScore.innerHTML = `${gameState.gameScore.player} : ${gameState.gameScore.computer}`
   };
 
   // PRIV addLogMessage method 
@@ -65,29 +70,29 @@ const game = (function () {
 
   // PRIV updateScore method
   function updateScore(roundResult) {
-    if (roundResult === 1) gameScore.player++;
-    if (roundResult === -1) gameScore.computer++;
+    if (roundResult === 1) gameState.gameScore.player++;
+    if (roundResult === -1) gameState.gameScore.computer++;
     updateUIGameScore();
   }
 
   // PUBLIC newGame method
   function newGame () {
-    gameRunning = true;
+    gameState.gameRunning = true;
     UIGameBtns.forEach(btn => {
       btn.addEventListener('click', game.nextRound);
       btn.classList.add('active')
     });
 
-    gameScore.player = gameScore.computer = 0;
+    gameState.gameScore.player = gameState.gameScore.computer = 0;
     updateUIGameScore();
     addLogMessage('Game started.');
   };
 
   // PRIV endGame method
   function endGame () {
-    gameRunning = false;
-    if (gameScore.player === winningScore) addLogMessage('Wonderful! You WIN the game!!!'); 
-    if (gameScore.computer === winningScore) addLogMessage('Badly! You LOSE the game!!!'); 
+    gameState.gameRunning = false;
+    if (gameState.gameScore.player === gameState.winningScore) addLogMessage('Wonderful! You WIN the game!!!'); 
+    if (gameState.gameScore.computer === gameState.winningScore) addLogMessage('Badly! You LOSE the game!!!'); 
     UIGameBtns.forEach(btn => {
       btn.removeEventListener('click', game.nextRound);
       btn.classList.remove('active');
@@ -106,7 +111,7 @@ const game = (function () {
     let roundResult = checkRoundResult(playerMv,computerMv);
     updateScore(roundResult);
     addLogMessage(`${UIicons[playerMv]} vs ${UIicons[computerMv]}. ${roundResultMap[roundResult]}`)
-    if (gameScore.player === winningScore || gameScore.computer === winningScore) endGame();
+    if (gameState.gameScore.player === gameState.winningScore || gameState.gameScore.computer === gameState.winningScore) endGame();
   };
 
   return {
@@ -114,7 +119,7 @@ const game = (function () {
     nextRound,
     isGameRunning,
     getWinningScore, 
-    setWinningScore 
+    setWinningScore
   }
 })()
 
