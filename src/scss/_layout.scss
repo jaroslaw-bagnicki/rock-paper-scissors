@@ -1,0 +1,43 @@
+// Global setup box-sizing to border-box
+*, 
+*:before, 
+*:after {
+  box-sizing: border-box;
+}
+
+.game-area {
+  height: 100vh;
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 5rem 0;
+  display: flex;
+}
+
+.game-interface-wrapper,
+.gamelog-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  padding: 0 1rem;
+}
+
+.game-interface-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#new-game-btn {
+  width: 60%;
+  font-size: 1.6rem;
+}
+
+#gamelog-board {
+  flex-grow: 1;
+  background-color: $light-grey;
+  padding: 0 .5rem;
+  overflow: auto;
+}
+

@@ -1,4 +1,10 @@
 @import 'vendors/normalize';
 @import 'vendors/skeleton';
 
-@import 'style';
+@import 'variables';
+@import 'utils';
+
+@import 'layout';
+
+@import 'components/game-buttons';
+@import 'components/modal';

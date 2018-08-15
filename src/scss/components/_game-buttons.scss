@@ -1,0 +1,45 @@
+.game-btns-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.game-btn {
+  margin: 0 .5rem;
+
+  & i {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10rem;
+    width: 10rem;
+    font-size: 5rem;
+    color: hsl(0, 0%, 50%);
+    text-decoration: none;
+    text-shadow: 1px 1px 1px hsl(0, 0%, 75%);
+    transition: .3s;
+  }
+
+  &.active i {
+    color: rgb(38, 38, 38);
+    border: 2px solid rgba(38, 38, 38, 0);
+    border-radius: 99px;
+  }
+
+  &--rock.active i:hover {
+    color: $red;
+    border: 2px solid $red;
+  }
+
+  &--paper.active i:hover {
+    color: $blue;
+    border: 2px solid $blue;
+  }
+
+  &--scissors.active i:hover {
+    color: $green;
+    border: 2px solid $green;
+  }
+}
