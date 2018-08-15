@@ -119,7 +119,7 @@ const game = (function () {
 })()
 
 // UI Vars
-const UIGameBtns = document.querySelectorAll('.game-btn');
+const UIGameBtns = document.querySelectorAll('.mv-btn');
 const UINewGameBtn = document.querySelector('#new-game-btn');
 const UIGameScore = document.querySelector('#game-score');
 const UIGameLog = document.querySelector('#gamelog-board');
