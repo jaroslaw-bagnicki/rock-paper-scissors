@@ -1,6 +1,6 @@
 'use strict'
 
-const game = (function () {
+var game = (function () { // ISSUE: If I use 'const' insted 'var'. Typing 'window['game']' don't return game object
   const gameState = {
     gameRunning: false,
     winningScore: 5,
@@ -77,8 +77,9 @@ const game = (function () {
   }
 
   // PUBLIC newGame method
-  function newGame () {
+  function newGame (winningScore) {
     gameState.gameRunning = true;
+    setWinningScore(winningScore);
     UIGameBtns.forEach(btn => {
       btn.addEventListener('click', game.nextRound);
       btn.classList.add('active')
@@ -87,11 +88,13 @@ const game = (function () {
     gameState.gameScore.player = gameState.gameScore.computer = 0;
     updateUIGameScore();
     addLogMessage('Game started.');
+    addLogMessage(`Winning score is: ${winningScore}`);
   };
 
   // PRIV endGame method
   function endGame () {
     gameState.gameRunning = false;
+    gameState.roundsPlayed = 0;
     if (gameState.gameScore.player === gameState.winningScore) addLogMessage('Wonderful! You WIN the game!!!'); 
     if (gameState.gameScore.computer === gameState.winningScore) addLogMessage('Badly! You LOSE the game!!!'); 
     UIGameBtns.forEach(btn => {
@@ -136,33 +139,118 @@ UINewGameBtn.addEventListener('click', newGameClick);
 // Function handling 'New Game' button
 function newGameClick () {
   if (!game.isGameRunning()) 
-    modal('Hello Gamer. Do You want play a game?', game.newGame ,"Play");
+    modal('newGame');
   if (game.isGameRunning()) 
-    modal('You play now. Are you sure you want to start a new one?', game.newGame ,"Restart");
+    modal('restartGame');
 }
 
 // Modal function
-function modal (message, actionFn, actionName) {
-let modalBody = `
-  <div id="modal" class="modal">
-    <div class="modal__content">
-      <div class="modal__body">
-        <h5 class="modal__message">${message}</h5>
-      </div>
-      <div class="modal__footer">
-      <a id="modal__btn-close" href="#!" class="button">Close</a>
-        <a id="modal__btn-action" href="#!" class="button">${actionName}</a>
+function modal (modalId) {
+  // Modals data
+  const modalsData = {
+    newGame: {
+      body: `
+        <h5 class="modal__message">Hello Gamer. Do You want play a game?</h5>
+        Set winning score:
+        <form>
+          <div class="range-slider-container">
+            <input type="range" min="3" max="10" value="5" class="range-slider" id="winning-score">
+            <div class="range-slider-label" id="winning-score-label">#</div>
+          </div>
+        </form> 
+       `,
+      preFns: [
+        {name: 'initRangeSlider', params: ['winning-score']}
+      ],
+      actionFn: {name: 'game.newGame'},
+      actionName: 'Play'
+    },
+    restartGame: {
+      body: `
+        <h5 class="modal__message">You play now. Are you sure you want to start a new one?</h5>
+      `,
+      actionFn: {name: 'modal', params: ['newGame']},
+      actionName: 'Restart'
+    },
+    endGame: {
+      body: `
+        Test message from 'endGame' modal obj
+      `,
+      actionFn: {name: 'modal', params: ['newGame']},
+      actionName: 'Play Again' 
+    }
+  };
+
+  // Modal template
+  const modalTemplate = `
+    <div id="modal" class="modal hidden">
+      <div class="modal__content">
+        <div class="modal__body">
+          ${modalsData[modalId].body}
+        </div>
+        <div class="modal__footer">
+        <a id="modal__btn-close" href="#!" class="button">Close</a>
+          <a id="modal__btn-action" href="#!" class="button">${modalsData[modalId].actionName}</a>
+        </div>
       </div>
     </div>
-  </div>
-`;
-  document.body.insertAdjacentHTML('beforeend', modalBody);
+  `;
+
+  document.body.insertAdjacentHTML('beforeend', modalTemplate);
   let UImodal = document.querySelector('#modal');
+  // Invoke pre functions
+  if (modalsData[modalId].preFns) {
+    modalsData[modalId].preFns.forEach(fn => invokeFnFromObj(fn));
+  };
   let UImodalBtnClose = document.querySelector('#modal__btn-close');
   let UImodalBtnAction = document.querySelector('#modal__btn-action');
   UImodalBtnClose.addEventListener('click', function() {UImodal.remove()});
   UImodalBtnAction.addEventListener('click', function() {
+    if (modalsData[modalId].postFns) {
+      modalsData[modalId].postFns.forEach(fn => invokeFnFromObj(fn));
+    };  
+    invokeFnFromObj(modalsData[modalId].actionFn, [getWinningScore()]);
     UImodal.remove();
-    actionFn();
   });
+  UImodal.classList.remove('hidden');
+}
+
+function getWinningScore() {
+  if (document.querySelector('#winning-score'))
+    return parseInt(document.querySelector('#winning-score').value);
+}
+
+function initRangeSlider(rangeSliderId) {
+  const UIRangeSlider = document.querySelector(`#${rangeSliderId}`);
+  const UIRangeSliderLabel = document.querySelector(`#${rangeSliderId}-label`);
+  // Binding label
+  UIRangeSliderLabel.innerText = UIRangeSlider.value;
+  UIRangeSlider.oninput = function () {
+    UIRangeSliderLabel.innerText = this.value;
+  }
+};
+
+
+// Calling JavaScript function for string (based on solution: https://www.sitepoint.com/call-javascript-function-string-without-using-eval/)
+function invokeFnFromObj (fnObj, params) {
+  if (fnObj.params) 
+    params = fnObj.params;
+  console.log(fnObj, params);
+  const invokedFn = parseScope(fnObj.name);
+  
+  if (typeof invokedFn === "function") 
+    if (params) 
+      invokedFn.apply(null, params)
+    else invokedFn();
+};
+
+// Parsing scope (based on: https://stackoverflow.com/questions/912596/how-to-turn-a-string-into-a-javascript-function-call/12380392#12380392)
+function parseScope (scopeString) {
+  let scope = window;
+  const scopeSplit = scopeString.split('.');
+  for (let i = 0; i < scopeSplit.length - 1; i++) {
+    scope = scope[scopeSplit[i]];
+    if (scope == undefined) return;
+  }
+  return scope[scopeSplit[scopeSplit.length - 1]];
 }
