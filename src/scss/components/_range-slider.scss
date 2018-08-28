@@ -1,13 +1,13 @@
 /* Based on w3school tutorial: Creating a Range Slider (https://www.w3schools.com/howto/howto_js_rangeslider.asp) */
 
-.range-slider-container {
+.range-slider {
   display: flex;
   flex-direction: row;
   align-items: center;
   height: 1.2rem;
 }
 
-.range-slider {
+.range-slider-input {
   flex-grow: 1;
   -webkit-appearance: none;  /* Override default CSS styles */
   appearance: none;
@@ -20,12 +20,12 @@
   margin: 0 .5rem;
 }
 
-.range-slider:hover {
+.range-slider-input:hover {
   opacity: 1;
 }
 
 /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */ 
-.range-slider::-webkit-slider-thumb {
+.range-slider-input::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 1.2rem; 
@@ -35,7 +35,7 @@
   cursor: pointer;
 }
 
-.range-slider::-moz-range-thumb {
+.range-slider-input::-moz-range-thumb {
   width: 1.2rem;
   height: 1.2rem;
   border-radius: 99px;
