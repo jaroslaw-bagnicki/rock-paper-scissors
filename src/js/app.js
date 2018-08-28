@@ -125,44 +125,112 @@ const game = (function () {
   }
 })()
 
+// Modal function
+const modal = (function () {
+  // Modal UI vars init
+  let UIModal, UIModalBtnClose, UIModalBtnAction;
+
+  // Modal template
+  function modalTemplate(modalContent) {
+    return `
+      <div id="modal" class="modal hidden">
+        <div class="modal__content">
+          <div class="modal__body">
+            ${modalContent}
+          </div>
+          <div class="modal__footer">
+          <a id="modal__btn-close" href="#!" class="button">Close</a>
+            <a id="modal__btn-action" href="#!" class="button">Action</a>
+          </div>
+        </div>
+      </div>
+    `
+  }
+
+  function initModal(modalContent) {
+    document.body.insertAdjacentHTML('beforeend', modalTemplate(modalContent));
+    UIModal = document.querySelector('#modal');
+    UIModalBtnClose = UIModal.querySelector('#modal__btn-close');
+    UIModalBtnAction = UIModal.querySelector('#modal__btn-action');
+    UIModalBtnClose.addEventListener('click', function() {
+      destroyModal();
+    });
+  }
+
+  function showModal() {
+    UIModal.classList.remove('hidden');
+  }
+
+  function destroyModal() {
+    console.log('Modal UI elements before remove:', UIModal, UIModalBtnClose, UIModalBtnAction);
+    UIModal.remove();
+    UIModal = null; // Why UIModalBtnClose, UIModalBtnAction exist after nulling UImodal?
+    console.log('Modal UI elements after remove:', UIModal, UIModalBtnClose, UIModalBtnAction);
+  }
+
+  function newGame() {
+    const modalContent = `
+      <h5 class="modal__message">Hello Gamer. Do You want play a game?</h5>
+      Set winning score:
+      <form>
+        <div class="range-slider" id="winning-score-input">
+          <input type="range" min="3" max="10" value="5" class="range-slider-input">
+          <div class="range-slider-label">#</div>
+        </div>
+      </form> 
+    `;
+    initModal(modalContent);
+    const winningScoreInput = initRangeSlider(UIModal.querySelector('#winning-score-input'));
+    UIModalBtnAction.addEventListener('click', function() {
+      console.log('Action button was clicked.');
+      console.log('Winning score input value:', winningScoreInput.getValue());
+    });
+  }
+
+  function restartGame() {
+    console.log('Game is running');
+  }
+
+  return {
+    newGame,
+    restartGame,
+    // !! Temporary (default private) !!
+    initModal,
+    showModal,
+    destroyModal,
+    UIModal // Why returns 'undefined' when is called after modal init?
+  }
+})()
+
+// Range slider initalization
+function initRangeSlider(rangeSlider) {
+  // Binding label
+  const input = rangeSlider.querySelector('input[type="range"]')
+  const label = rangeSlider.querySelector('.range-slider-label');
+  label.innerText = input.value;
+  input.oninput = function() {
+    label.innerText = this.value;
+  };
+  // Input value getter
+  function getValue() {
+    return parseInt(input.value);
+  };
+  return {
+    getValue
+  }
+};
+
 // UI Vars
 const UIGameBtns = document.querySelectorAll('.mv-btn');
 const UINewGameBtn = document.querySelector('#new-game-btn');
 const UIGameScore = document.querySelector('#game-score');
 const UIGameLog = document.querySelector('#gamelog-board');
 
+// Handler 'New Game' button
 UINewGameBtn.addEventListener('click', newGameClick);
-
-// Function handling 'New Game' button
 function newGameClick () {
   if (!game.isGameRunning()) 
-    modal('Hello Gamer. Do You want play a game?', game.newGame ,"Play");
-  if (game.isGameRunning()) 
-    modal('You play now. Are you sure you want to start a new one?', game.newGame ,"Restart");
-}
-
-// Modal function
-function modal (message, actionFn, actionName) {
-let modalBody = `
-  <div id="modal" class="modal">
-    <div class="modal__content">
-      <div class="modal__body">
-        <h5 class="modal__message">${message}</h5>
-      </div>
-      <div class="modal__footer">
-      <a id="modal__btn-close" href="#!" class="button">Close</a>
-        <a id="modal__btn-action" href="#!" class="button">${actionName}</a>
-      </div>
-    </div>
-  </div>
-`;
-  document.body.insertAdjacentHTML('beforeend', modalBody);
-  let UImodal = document.querySelector('#modal');
-  let UImodalBtnClose = document.querySelector('#modal__btn-close');
-  let UImodalBtnAction = document.querySelector('#modal__btn-action');
-  UImodalBtnClose.addEventListener('click', function() {UImodal.remove()});
-  UImodalBtnAction.addEventListener('click', function() {
-    UImodal.remove();
-    actionFn();
-  });
-}
+    modal.newGame();
+  else
+    modal.restartGame();
+};
