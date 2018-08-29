@@ -1,41 +1,62 @@
 'use strict'
 
+// ---------------- //
+//  GAME function  //
+// ---------------- //
 const game = (function () {
-  let gameScore = {};
-  let winningScore = 5;
-  let gameRunning = false;
+  const gameState = {
+    gameRunning: false,
+    winningScore: 5,
+    roundsPlayed: 0,
+    gameScore: {
+      player: 0,
+      computer: 0
+    }
+  }
 
-  const gameChoiceMap = {
-    1: 'rock',
-    2: 'paper',
-    3: 'scissors'
+  const gameMvMap = {
+    'rock': 1,
+    'paper': 2,
+    'scissors': 3
   }
 
   const UIicons = {
-    rock: '<i class="fa fa-hand-rock"></i>',
-    paper: '<i class="fa fa-hand-paper"></i>',
-    scissors: '<i class="fa fa-hand-scissors"></i>'
+    1: '<i class="fa fa-hand-rock"></i>', // rock
+    2: '<i class="fa fa-hand-paper"></i>', // paper
+    3: '<i class="fa fa-hand-scissors"></i>' // scissors
+  }
+
+  const gameMessages = {
+    newGame: '--- New game started ---',
+    winningScoreSet: 'Winning score was set to:',
+    win: 'Wonderful! You WIN the game!!!',
+    lose: 'Badly! You LOSE the game.',
+    roundResult: {
+      '0': 'Draw.',
+      '-1': 'You lose round :(',
+      '1': 'You win round :)'
+    }
   }
 
   // PUBLIC check is game currently running
   function isGameRunning () {
-    return gameRunning;
+    return gameState.gameRunning;
   }
 
   // PUBLIC get & set method for winningScore properties
   function getWinningScore () {
-    return winningScore;
+    return gameState.winningScore;
   }
 
   function setWinningScore (value) {
     if (arguments.length === 0) throw 'No passed parameter.';
     if (!Number.isInteger(value)) throw 'Parameter must be integer.';
-    winningScore = value;
+    gameState.winningScore = value;
   }
 
   // PRIV scoreRefresh method 
   function updateUIGameScore () {
-    UIGameScore.innerHTML = `${gameScore.player} : ${gameScore.computer}`
+    UIGameScore.innerHTML = `${gameState.gameScore.player} : ${gameState.gameScore.computer}`
   };
 
   // PRIV addLogMessage method 
@@ -65,48 +86,48 @@ const game = (function () {
 
   // PRIV updateScore method
   function updateScore(roundResult) {
-    if (roundResult === 1) gameScore.player++;
-    if (roundResult === -1) gameScore.computer++;
+    if (roundResult === 1) gameState.gameScore.player++;
+    if (roundResult === -1) gameState.gameScore.computer++;
     updateUIGameScore();
   }
 
   // PUBLIC newGame method
-  function newGame () {
-    gameRunning = true;
+  function newGame (winningScore) {
+    gameState.gameRunning = true;
+    setWinningScore(winningScore);
     UIGameBtns.forEach(btn => {
       btn.addEventListener('click', game.nextRound);
       btn.classList.add('active')
     });
-
-    gameScore.player = gameScore.computer = 0;
+    gameState.gameScore.player = gameState.gameScore.computer = 0;
     updateUIGameScore();
-    addLogMessage('Game started.');
+    addLogMessage(gameMessages.newGame);
+    addLogMessage(`${gameMessages.winningScoreSet} ${winningScore}.`);
   };
 
   // PRIV endGame method
   function endGame () {
-    gameRunning = false;
-    if (gameScore.player === winningScore) addLogMessage('Wonderful! You WIN the game!!!'); 
-    if (gameScore.computer === winningScore) addLogMessage('Badly! You LOSE the game!!!'); 
+    gameState.gameRunning = false;
+    gameState.roundsPlayed = 0;
+    const endGameMessage = (gameState.gameScore.player === gameState.winningScore)
+      ? gameMessages.win : gameMessages.lose;
+    addLogMessage(endGameMessage); 
     UIGameBtns.forEach(btn => {
       btn.removeEventListener('click', game.nextRound);
       btn.classList.remove('active');
     });
+    modal.endGameModal(gameState.gameScore, endGameMessage);
   }
   
   // PUBLIC nextRound method
-  function nextRound () {
-    let roundResultMap = {
-      '0': 'Draw.',
-      '-1': 'You lose round :(',
-      '1': 'You win round :)'
-    };
-    let playerChoice = UIBtnsIdMap[this.id];
-    let computerChoice = computerMove();
-    let roundResult = checkRoundResult(playerChoice,computerChoice);
+  function nextRound (e) {
+    let playerMv = gameMvMap[e.currentTarget.getAttribute('data-mv')];
+    let computerMv = computerMove();
+    let roundResult = checkRoundResult(playerMv,computerMv);
     updateScore(roundResult);
-    addLogMessage(`${UIicons[gameChoiceMap[playerChoice]]} vs ${UIicons[gameChoiceMap[computerChoice]]}. ${roundResultMap[roundResult]}`)
-    if (gameScore.player === winningScore || gameScore.computer === winningScore) endGame();
+    gameState.roundsPlayed++;
+    addLogMessage(`Round ${gameState.roundsPlayed}: ${UIicons[playerMv]} vs ${UIicons[computerMv]}. ${gameMessages.roundResult[roundResult]}`)
+    if (gameState.gameScore.player === gameState.winningScore || gameState.gameScore.computer === gameState.winningScore) endGame();
   };
 
   return {
@@ -114,54 +135,143 @@ const game = (function () {
     nextRound,
     isGameRunning,
     getWinningScore, 
-    setWinningScore 
+    setWinningScore
   }
 })()
 
+// ---------------- //
+//  MODAL function  //
+// ---------------- //
+const modal = (function () {
+  // Modal UI vars init
+  let UIModal, UIModalBtnClose, UIModalBtnAction;
+
+  // Modal template
+  function modalTemplate(modalContent) {
+    return `
+      <div id="modal" class="modal hidden">
+        <div class="modal__content">
+          <div class="modal__body">
+            ${modalContent}
+          </div>
+          <div class="modal__footer">
+          <a id="modal__btn-close" href="#!" class="button">Close</a>
+            <a id="modal__btn-action" href="#!" class="button">Action</a>
+          </div>
+        </div>
+      </div>
+    `
+  }
+
+  function initModal(modalContent) {
+    document.body.insertAdjacentHTML('beforeend', modalTemplate(modalContent));
+    UIModal = document.querySelector('#modal');
+    UIModalBtnClose = UIModal.querySelector('#modal__btn-close');
+    UIModalBtnAction = UIModal.querySelector('#modal__btn-action');
+    UIModalBtnClose.addEventListener('click', function() {
+      closeModal();
+    });
+  }
+
+  function showModal() {
+    UIModal.classList.remove('hidden');
+  }
+
+  function closeModal() {
+    UIModal.remove();
+    UIModal = null; // Why UIModalBtnClose, UIModalBtnAction exist after nulling UImodal?
+  }
+
+  function newGameModal() {
+    const modalContent = `
+      <h5 class="modal__message">Hello Gamer. Do You want play a game?</h5>
+      Set winning score:
+      <div class="range-slider" id="winning-score-input">
+        <input type="range" min="3" max="10" value="5" class="range-slider-input">
+        <div class="range-slider-label">#</div>
+      </div>
+    `;
+    initModal(modalContent);
+    const winningScoreInput = initRangeSlider(UIModal.querySelector('#winning-score-input'));
+    UIModalBtnAction.innerText = 'Start new game';
+    UIModalBtnAction.addEventListener('click', function() {
+      game.newGame(winningScoreInput.getValue());
+      closeModal();
+    });
+    showModal();
+  }
+
+  function restartGameModal() {
+    const modalContent = `
+      <h5 class="modal__message">Game is running. Are You sure to start new one?</h5>
+    `;
+    initModal(modalContent);
+    UIModalBtnAction.innerText = 'Restart game';
+    UIModalBtnAction.addEventListener('click', function() {
+      closeModal();
+      newGameModal();
+    });
+    showModal();
+  }
+
+  function endGameModal(gameScore, endGameMessage) {
+    const modalContent = `
+      <div class="u-center">
+        <h4 class="modal__message">${endGameMessage}</h4>
+        <h5>Final Score:</h5>
+        <h1 id="game-score">${gameScore.player} : ${gameScore.computer}</h1>
+      </div>
+    `;
+    initModal(modalContent);
+    UIModalBtnAction.innerText = 'New game';
+    UIModalBtnAction.addEventListener('click', function() {
+      closeModal();
+      newGameModal();
+    });
+    showModal();
+  }
+
+  return {
+    newGameModal,
+    restartGameModal,
+    endGameModal,
+    // !! Temporary (default private) !!
+    initModal,
+    showModal,
+    closeModal,
+    UIModal // Why returns 'undefined' when is called from console after invoked modal.init()?
+  }
+})()
+
+// Range slider initalization
+function initRangeSlider(rangeSlider) {
+  // Binding label
+  const input = rangeSlider.querySelector('input[type="range"]')
+  const label = rangeSlider.querySelector('.range-slider-label');
+  label.innerText = input.value;
+  input.oninput = function() {
+    label.innerText = this.value;
+  };
+  // Input value getter
+  function getValue() {
+    return parseInt(input.value);
+  };
+  return {
+    getValue
+  }
+};
+
 // UI Vars
-const UIGameBtns = document.querySelectorAll('.game-btn');
+const UIGameBtns = document.querySelectorAll('.mv-btn');
 const UINewGameBtn = document.querySelector('#new-game-btn');
 const UIGameScore = document.querySelector('#game-score');
 const UIGameLog = document.querySelector('#gamelog-board');
 
-const UIBtnsIdMap = {
-  'game-btn-rock': 1,
-  'game-btn-paper': 2,
-  'game-btn-scissors': 3
-}
-
+// Handler 'New Game' button
 UINewGameBtn.addEventListener('click', newGameClick);
-
-// Function handling 'New Game' button
 function newGameClick () {
   if (!game.isGameRunning()) 
-    modal('Hello Gamer. Do You want play a game?', game.newGame ,"Play");
-  if (game.isGameRunning()) 
-    modal('You play now. Are you sure you want to start a new one?', game.newGame ,"Restart");
-}
-
-// Modal function
-function modal (message, actionFn, actionName) {
-let modalBody = `
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-body">
-        <h5 class="modal-message">${message}</h5>
-      </div>
-      <div class="modal-footer">
-      <a id="modal-btn-close" href="#!" class="button">Close</a>
-        <a id="modal-btn-action" href="#!" class="button">${actionName}</a>
-      </div>
-    </div>
-  </div>
-`;
-  document.body.insertAdjacentHTML('beforeend', modalBody);
-  let UImodal = document.querySelector('#modal');
-  let UImodalBtnClose = document.querySelector('#modal-btn-close');
-  let UImodalBtnAction = document.querySelector('#modal-btn-action');
-  UImodalBtnClose.addEventListener('click', function() {UImodal.remove()});
-  UImodalBtnAction.addEventListener('click', function() {
-    UImodal.remove();
-    actionFn();
-  });
-}
+    modal.newGameModal();
+  else
+    modal.restartGameModal();
+};
