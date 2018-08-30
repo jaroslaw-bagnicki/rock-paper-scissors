@@ -14,10 +14,16 @@ const game = (function () {
     }
   }
 
-  const gameMvMap = {
+  const move = {
     'rock': 1,
     'paper': 2,
     'scissors': 3
+  }
+
+  const result = {
+    'draw': 0,
+    'lose': -1,
+    'win': 1
   }
 
   const UIicons = {
@@ -73,21 +79,21 @@ const game = (function () {
   // PRIV checkRoundResult method
   function checkRoundResult(playerMv, computerMv) {
     if (playerMv === computerMv) 
-      return 0;
-    if ((playerMv === 1 && computerMv === 2) || 
-        (playerMv === 2 && computerMv === 3) || 
-        (playerMv === 3 && computerMv === 1))
-      return -1;
-    if ((playerMv === 1 && computerMv === 3) || 
-        (playerMv === 2 && computerMv === 1) || 
-        (playerMv === 3 && computerMv === 2))
-      return 1;
+      return result.draw;
+    if ((playerMv === move.rock && computerMv === move.paper) || 
+        (playerMv === move.paper && computerMv === move.scissors) || 
+        (playerMv === move.scissors && computerMv === move.rock))
+      return result.lose;
+    if ((playerMv === move.rock && computerMv === move.scissors) || 
+        (playerMv === move.paper && computerMv === move.rock) || 
+        (playerMv === move.scissors && computerMv === move.paper))
+      return result.win;
   }
 
   // PRIV updateScore method
   function updateScore(roundResult) {
-    if (roundResult === 1) gameState.gameScore.player++;
-    if (roundResult === -1) gameState.gameScore.computer++;
+    if (roundResult === result.win) gameState.gameScore.player++;
+    if (roundResult === result.lose) gameState.gameScore.computer++;
     updateUIGameScore();
   }
 
@@ -121,7 +127,7 @@ const game = (function () {
   
   // PUBLIC nextRound method
   function nextRound (e) {
-    let playerMv = gameMvMap[e.currentTarget.getAttribute('data-mv')];
+    let playerMv = move[e.currentTarget.getAttribute('data-mv')];
     let computerMv = computerMove();
     let roundResult = checkRoundResult(playerMv,computerMv);
     updateScore(roundResult);
